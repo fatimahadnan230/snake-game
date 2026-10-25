@@ -7,57 +7,132 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
-        body { font-family: 'Quicksand', sans-serif; }
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+        }
+
+        /* Animated gradient mesh background */
+        .animated-bg {
+            background: linear-gradient(-45deg, #fbcfe8, #f3e8ff, #e0e7ff, #fce7f3);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtle floating animation for cards */
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen flex flex-col items-center justify-center p-4 select-none">
+<body class="animated-bg min-h-screen flex flex-col items-center justify-center p-4 select-none relative overflow-hidden">
+
+    <!-- Background Floating Particles Canvas -->
+    <canvas id="bgCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
     <!-- Game Card Container -->
-    <div class="bg-white/80 backdrop-blur-md border border-white shadow-2xl rounded-3xl p-6 max-w-md w-full text-center relative overflow-hidden">
+    <div class="z-10 bg-white/70 backdrop-blur-xl border border-white/80 shadow-2xl rounded-[2.5rem] p-6 max-w-md w-full text-center relative overflow-hidden floating-card">
         
         <!-- Header -->
         <header class="mb-4">
-            <span class="bg-pink-100 text-pink-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Game Development Society</span>
-            <h1 class="text-3xl font-bold text-gray-700 mt-2">🐍 Snake Game ✨</h1>
+            <span class="bg-gradient-to-r from-pink-200 to-purple-200 text-pink-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/60 shadow-xs">
+                Game Development Society
+            </span>
+            <h1 class="text-3xl font-bold text-gray-700 mt-2 tracking-tight">🐍 Pastel Snake ✨</h1>
             <p class="text-gray-500 text-sm mt-1">Use Arrow Keys or WASD to guide the snake!</p>
         </header>
 
         <!-- Canvas Game Screen -->
-        <div class="relative w-full aspect-square rounded-2xl overflow-hidden shadow-inner bg-gradient-to-b from-pink-50 to-purple-50 flex items-center justify-center">
-            <canvas id="gameCanvas" width="400" height="400" class="w-full h-full block"></canvas>
+        <div class="relative w-full aspect-square rounded-3xl overflow-hidden shadow-lg border-2 border-white/80 bg-gradient-to-b from-white/90 to-purple-50/80 flex items-center justify-center">
+            <canvas id="gameCanvas" width="400" height="400" class="w-full h-full block z-10"></canvas>
 
             <!-- Overlay Start Screen -->
-            <div id="startScreen" class="absolute inset-0 bg-white/50 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-gray-700">
+            <div id="startScreen" class="absolute inset-0 z-20 bg-white/50 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-gray-700">
                 <div class="text-6xl animate-bounce mb-2">🐍</div>
-                <h2 class="text-2xl font-bold">Macaron Muncher</h2>
+                <h2 class="text-2xl font-bold text-gray-800">Macaron Muncher</h2>
                 <p class="text-sm text-gray-600 mt-1 mb-6">Eat yummy treats and grow longer!</p>
-                <button onclick="startGame()" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+                <button onclick="startGame()" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold px-7 py-3 rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all border border-white/50">
                     Start Game ✨
                 </button>
             </div>
 
             <!-- Overlay Game Over Screen -->
-            <div id="gameOverScreen" class="absolute inset-0 bg-white/60 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-gray-700">
+            <div id="gameOverScreen" class="absolute inset-0 z-20 bg-white/70 backdrop-blur-sm hidden flex-col items-center justify-center p-6 text-gray-700">
                 <div class="text-5xl mb-2">😢</div>
                 <h2 class="text-2xl font-bold text-gray-800">Game Over!</h2>
-                <div class="bg-white/80 rounded-2xl p-4 my-4 w-full border border-pink-100 shadow-sm">
+                <div class="bg-white/90 rounded-2xl p-4 my-4 w-full border border-pink-100 shadow-sm">
                     <p class="text-sm text-gray-500">Score: <span id="finalScore" class="font-bold text-pink-500 text-lg">0</span></p>
                     <p class="text-sm text-gray-500">Best Score: <span id="bestScore" class="font-bold text-purple-500 text-lg">0</span></p>
                 </div>
-                <button onclick="startGame()" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold px-6 py-3 rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+                <button onclick="startGame()" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold px-7 py-3 rounded-2xl shadow-md hover:scale-105 active:scale-95 transition-all border border-white/50">
                     Play Again 🔄
                 </button>
             </div>
         </div>
 
-        <!-- Footer Stats -->
-        <div class="flex justify-between items-center mt-4 px-2 text-sm font-semibold text-gray-600">
+        <!-- Footer Stats Bar -->
+        <div class="flex justify-between items-center mt-5 px-4 py-2 bg-purple-100/40 border border-purple-200/50 rounded-2xl text-sm font-semibold text-gray-600 shadow-xs">
             <div>Score: <span id="scoreDisplay" class="text-pink-500 font-bold">0</span></div>
             <div>Best: <span id="highScoreDisplay" class="text-purple-500 font-bold">0</span></div>
         </div>
     </div>
 
     <script>
+        /* --- Floating Background Animation Script --- */
+        const bgCanvas = document.getElementById('bgCanvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgParticles = [];
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeBgCanvas);
+        resizeBgCanvas();
+
+        // Fully supported floating background items
+        const symbols = ['✨', '🌸', '🍓', '⭐', '☁️', '💖', '🍡'];
+        for (let i = 0; i < 22; i++) {
+            bgParticles.push({
+                x: Math.random() * bgCanvas.width,
+                y: Math.random() * bgCanvas.height,
+                size: Math.random() * 22 + 16,
+                symbol: symbols[Math.floor(Math.random() * symbols.length)],
+                speedY: Math.random() * 0.4 + 0.1,
+                speedX: (Math.random() - 0.5) * 0.3,
+                opacity: Math.random() * 0.5 + 0.3
+            });
+        }
+
+        function renderBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            bgParticles.forEach(p => {
+                bgCtx.globalAlpha = p.opacity;
+                bgCtx.font = `${p.size}px sans-serif`;
+                bgCtx.fillText(p.symbol, p.x, p.y);
+                p.y -= p.speedY;
+                p.x += p.speedX;
+
+                if (p.y < -30) {
+                    p.y = bgCanvas.height + 30;
+                    p.x = Math.random() * bgCanvas.width;
+                }
+            });
+            requestAnimationFrame(renderBg);
+        }
+        renderBg();
+
+        /* --- Game Engine Script --- */
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -154,11 +229,11 @@
         }
 
         function clearCanvas() {
-            ctx.fillStyle = '#FAF5FF';
+            ctx.fillStyle = 'rgba(250, 245, 255, 0.9)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw soft grid lines
-            ctx.strokeStyle = '#F3E8FF';
+            // Soft grid lines
+            ctx.strokeStyle = 'rgba(243, 232, 255, 0.8)';
             ctx.lineWidth = 1;
             for (let i = 0; i < tileCount; i++) {
                 ctx.beginPath();
