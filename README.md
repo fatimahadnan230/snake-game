@@ -1,4 +1,4 @@
-# 🐍 Pastel Snake (Macaron Muncher) ✨
+# 🐍 Snake Game (Macaron Muncher) ✨
 
 A retro arcade classic redesigned with a cozy pastel aesthetic, smooth grid-based movement, and sound effects built using the Web Audio API. Crafted for the Game Development Society!
 
